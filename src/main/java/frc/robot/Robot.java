@@ -23,14 +23,15 @@ public class Robot extends TimedRobot {
   private final RobotContainer m_robotContainer;
   private final AddressableLED m_led;
   private final AddressableLEDBuffer m_ledBuffer;
-  
-  AddressableLEDBuffer m_buffer = new AddressableLEDBuffer(120);
-    // all hues at maximum saturation and half brightness
 
+  /* Configuration Options */
+  private final int numLED = 40;// Number of LEDs
+  private final int port = 0;// PWM port number (can only be a PWM port)
+  
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
-   */
+  */
   public Robot() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
@@ -39,16 +40,9 @@ public class Robot extends TimedRobot {
 
     // Must be a PWM header, not MXP or DIO
 
-    m_led = new AddressableLED(0);
+    m_led = new AddressableLED(port);// Change port number here
 
-
-    // Reuse buffer
-
-    // Default to a length of 60, start empty output
-
-    // Length is expensive to set, so only set it once, then just update data
-
-    m_ledBuffer = new AddressableLEDBuffer(40);
+    m_ledBuffer = new AddressableLEDBuffer(numLED);
 
     m_led.setLength(m_ledBuffer.getLength());
 
@@ -69,16 +63,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    // Create an LED pattern that sets the entire strip to solid white
+    LEDPattern red = LEDPattern.solid(Color.kWhite);
 
-  // Create an LED pattern that sets the entire strip to solid red
-  LEDPattern red = LEDPattern.solid(Color.kWhite);
+    // Apply the LED pattern to the data buffer
+    red.applyTo(m_ledBuffer);
 
-  // Apply the LED pattern to the data buffer
-  red.applyTo(m_ledBuffer);
-
-  // Write the data to the LED strip
-  m_led.setData(m_ledBuffer);
-
+    // Write the data to the LED strip
+    m_led.setData(m_ledBuffer);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
